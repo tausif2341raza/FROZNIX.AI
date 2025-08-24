@@ -1,0 +1,87 @@
+ /* PARTICLE BACKGROUND */
+const canvas=document.getElementById('particles');
+const ctx=canvas.getContext('2d');
+let W=canvas.width=window.innerWidth;
+let H=canvas.height=window.innerHeight;
+window.addEventListener('resize',()=>{W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;});
+const particles=[];
+for(let i=0;i<150;i++){
+  particles.push({
+    x:Math.random()*W,
+    y:Math.random()*H,
+    r:Math.random()*3+1,
+    dx:(Math.random()-0.5)*1.5,
+    dy:(Math.random()-0.5)*1.5,
+    color:`hsl(${Math.random()*360},80%,60%)`
+  });
+}
+function drawParticles(){
+  ctx.clearRect(0,0,W,H);
+  particles.forEach(p=>{
+    ctx.beginPath();
+    ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    ctx.fillStyle=p.color;
+    ctx.fill();
+    p.x+=p.dx;p.y+=p.dy;
+    if(p.x<0||p.x>W)p.dx*=-1;
+    if(p.y<0||p.y>H)p.dy*=-1;
+  });
+  requestAnimationFrame(drawParticles);
+}
+drawParticles();
+
+/* PAGE SWITCHING */
+function showChat(){
+  document.getElementById('homePage').style.display='none';
+  document.getElementById('chatSection').style.display='block';
+}
+function goHome(){
+  document.getElementById('chatSection').style.display='none';
+  document.getElementById('homePage').style.display='block';
+}
+function showContact(){
+  alert("Contact us at: gamingwithruffian@gmail.com");
+}
+
+/* AI INTEGRATION WITH GEMINI */
+const GEMINI_KEY="AIzaSyDYLjTPzY-RNxnkr3G0jnBlUIxEBwHvxGI";
+let currentModel = "gemini-1.5-pro"; // Default Pro
+
+function switchModel(){
+  currentModel = (currentModel === "gemini-1.5-pro") ? "gemini-1.5-flash" : "gemini-1.5-pro";
+  document.getElementById("currentModel").innerText = (currentModel.includes("pro") ? "Pro" : "Flash");
+}
+
+async function queryGemini(prompt){
+  const apiURL = `https://generativelanguage.googleapis.com/v1beta/models/${currentModel}:generateContent?key=${GEMINI_KEY}`;
+  const response = await fetch(apiURL, {
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({
+      contents:[{role:"user", parts:[{text:prompt}]}]
+    })
+  });
+  const data = await response.json();
+  if(data.error){
+    if(currentModel === "gemini-1.5-pro"){
+      currentModel = "gemini-1.5-flash";
+      document.getElementById("currentModel").innerText = "Flash";
+      return await queryGemini(prompt);
+    }
+    return "⚠️ API Error: " + data.error.message;
+  }
+  try { return data.candidates[0].content.parts[0].text; }
+  catch (e){ return "⚠️ Unexpected response: " + JSON.stringify(data); }
+}
+
+async function sendMessage(){
+  const input=document.getElementById("userInput");
+  const question=input.value.trim();
+  if(!question)return;
+  const msgBox=document.getElementById("messages");
+  msgBox.innerHTML+=`<p><b>You:</b> ${question}</p>`;
+  input.value="";
+  const answer=await queryGemini("Answer in the same language as question: "+question);
+  msgBox.innerHTML+=`<p><b>FROZNIX AI:</b> ${answer}</p>`;
+  msgBox.scrollTop=msgBox.scrollHeight;
+}

@@ -1,0 +1,55 @@
+ * {margin:0;padding:0;box-sizing:border-box;}
+body,html {height:100%;font-family:'Segoe UI',sans-serif;color:#fff;overflow:hidden;}
+#particles {position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;background:#000;}
+.center {
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  text-align:center;
+}
+h1 {
+  font-size:clamp(32px,7vw,80px);
+  background:linear-gradient(90deg,#ff6ec4,#7873f5,#3acfd5);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  font-weight:900;
+  margin-bottom:20px;
+}
+.btns {display:flex;justify-content:center;gap:20px;flex-wrap:wrap;}
+.btn {
+  padding:12px 28px;border:none;border-radius:50px;
+  background:rgba(255,255,255,0.1);
+  backdrop-filter:blur(5px);
+  color:#fff;font-weight:bold;cursor:pointer;
+  transition:all .3s;
+}
+.btn:hover {background:rgba(255,255,255,0.3);transform:translateY(-3px);}
+#chatSection {
+  display:none;
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  width:90%;max-width:600px;
+  background:rgba(0,0,0,0.6);
+  padding:20px;border-radius:20px;
+  box-shadow:0 8px 24px rgba(0,0,0,0.6);
+}
+#messages {
+  max-height:300px;overflow-y:auto;margin-bottom:12px;
+  background:rgba(255,255,255,0.05);padding:10px;border-radius:10px;
+}
+#messages p {margin:8px 0;}
+.inputRow {display:flex;gap:10px;}
+.inputRow input {
+  flex:1;padding:10px;border:none;border-radius:8px;
+}
+.inputRow button {
+  padding:10px 20px;border:none;border-radius:8px;
+  background:#ff6ec4;color:#fff;font-weight:bold;cursor:pointer;
+}
+.back-btn {
+  margin-top:10px;
+  background:#3acfd5 !important;
+}
+.model-switch {
+  margin-top:10px;
+  background:#7873f5 !important;
+}
